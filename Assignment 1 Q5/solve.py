@@ -1,11 +1,11 @@
 import copy
 import sys
 
-formula = open(str(sys.argv[1]) + ".txt", "r")
+formula = open(str(sys.argv[1]), "r")
 formula_lines = []
 for x in formula:
   formula_lines.append(x)
-proof = open(str(sys.argv[2]) + ".txt","r")
+proof = open(str(sys.argv[2]),"r")
 proof_lines = []
 for x in proof:
     proof_lines.append(x)
@@ -80,10 +80,10 @@ try:
             corr = False
             break
 
-    if corr == True:
-        print("Correct")
+    if corr == True and lis==[]:
+        print("correct")
     else:
-        print("Incorrect")
+        print("incorrect")
 
 except:
     print("Incorrect formatting of file")

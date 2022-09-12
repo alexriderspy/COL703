@@ -5,10 +5,10 @@ eg in my folder, I have proof1, proof2 and proof3 out of which proof1 is correct
 type
 python solve.py formula.txt proof1.txt
 prints : 
-Correct
+correct
 python solve.py formula.txt proof2.txt
 prints : 
-Incorrect
+incorrect
 python solve.py formula.txt proof3.txt
 prints : 
-Incorrect
+incorrect
