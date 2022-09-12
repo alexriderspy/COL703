@@ -1,1 +1,0 @@
-Type python solve.py to run the code and it will print Correct in the terminal if it is correct else it will print Incorrect
