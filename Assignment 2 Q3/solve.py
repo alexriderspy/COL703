@@ -1,6 +1,5 @@
 import copy,math
 import sys
-from typing import final
 
 formula = open(str(sys.argv[1]), "r")
 formula_lines = []
