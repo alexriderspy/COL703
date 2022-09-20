@@ -38,6 +38,7 @@ def read(lis, index):
     return c1,c2
     
 def get (c,O):
+    global F
     line_num = int(c[:-1])
     type = c[-1]
     if type == 'f':
@@ -66,7 +67,7 @@ def union(clis1,cl1,clis2,cl2):
     return clis
 
 def dfs(O,i):
-    global final_O
+    global final_O,P,F
     if i == len(P):
         if len(O[-1][1]) == 0:
             final_O = O
@@ -115,8 +116,8 @@ def dfs(O,i):
                 dfs(O + [('',newlis)], i+1)
     
     
-def output(type, final_lis):
-    output_file = open(str(sys.argv[3]),"w")
+def output(type, final_lis,output_file):
+    global P
     if type == False:
         final_output = ''
         for x in P:
@@ -159,6 +160,7 @@ def solve(formula_path, proof_path, output_path):
 
     proof = open(proof_path,"r").read()
     proof = proof.split('\n')
+    output_file = open(output_path,"w")
     #F is formula file
 
     #P is proof file
@@ -167,4 +169,4 @@ def solve(formula_path, proof_path, output_path):
         P.append(proof[i])
 
     dfs([],0)
-    output(final_O!=-1,final_O)
+    output(final_O!=-1,final_O,output_file)
