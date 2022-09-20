@@ -1,5 +1,9 @@
 import sys
 
+final_O = -1
+P = []
+F = []
+
 def get_prop(line):
     lis =  []
     tmp = ''
@@ -18,24 +22,6 @@ def get_prop(line):
 
 def remove_dup (lis):
     return [*set(lis)]
-
-
-formula = open(str(sys.argv[1]), "r").read()
-
-F = []
-
-formula = formula.split('\n')
-for i in range(2,len(formula)):
-    F.append(get_prop(formula[i]))
-
-proof = open(str(sys.argv[2]),"r").read()
-proof = proof.split('\n')
-#F is formula file
-P = []
-#P is proof file
-
-for i in range(len(proof)):
-    P.append(proof[i])
 
 def read(lis, index):
     line = lis[index]
@@ -68,7 +54,7 @@ def getlis (O):
     return lis
 
 #O is output file in the form of tuple (x,y)
-final_O = -1
+
 #if final_O == -1, then replace with np
 
 def union(clis1,cl1,clis2,cl2):
@@ -78,7 +64,6 @@ def union(clis1,cl1,clis2,cl2):
     clis.remove(cl2)
     clis = remove_dup(clis)
     return clis
-
 
 def dfs(O,i):
     global final_O
@@ -148,14 +133,38 @@ def output(type, final_lis):
             final_output+='\n'
         output_file.write(final_output)
     else:
+        final_output = ''
         for i in range(len(final_lis)):
             if final_lis[i][0] == '':
                 continue
-            
+            c1,c2 = read(P,i)
+            if c1 == '??':
+                final_output = final_output + final_lis[i][0] + ' ' + c2 +' '
+            elif c2 == '??':
+                final_output = final_output + c1 + ' ' + final_lis[i][0] +' '
+            else:
+                final_output = final_output + c1 + ' ' + c2 + ' '
+            for x in final_lis[i][1]:
+                final_output += str(x) + ' '
+            final_output += '0\n'
+        output_file.write(final_output)
 
-dfs([],0)
-if final_O == -1:
-    print("np")
-else:
-    print(final_O)
+def solve(formula_path, proof_path, output_path):
+    formula = open(formula_path, "r").read()
+    global F,P
 
+    formula = formula.split('\n')
+    for i in range(2,len(formula)):
+        F.append(get_prop(formula[i]))
+
+    proof = open(proof_path,"r").read()
+    proof = proof.split('\n')
+    #F is formula file
+
+    #P is proof file
+
+    for i in range(len(proof)):
+        P.append(proof[i])
+
+    dfs([],0)
+    output(final_O!=-1,final_O)
