@@ -1,10 +1,9 @@
-import sys
-
 final_O = -1
 P = []
 F = []
+flag = 0
 
-def get_prop(line):
+def obtain_prop(line):
     lis =  []
     tmp = ''
     for i in range(len(line)):
@@ -37,7 +36,7 @@ def read(lis, index):
         i += 1
     return c1,c2
     
-def get (c,O):
+def obtain (c,O):
     global F
     line_num = int(c[:-1])
     type = c[-1]
@@ -48,7 +47,7 @@ def get (c,O):
         line_num-=1
         return O[line_num][1]
 
-def getlis (O):
+def obtainlis (O):
     lis = []
     for tup in O:
         lis.append(tup[1])
@@ -66,54 +65,74 @@ def union(clis1,cl1,clis2,cl2):
     clis = remove_dup(clis)
     return clis
 
+def checksame(lis1,lis2):
+    if len(lis1)!=len(lis2):
+        return False
+    for i in range(len(lis1)):
+        if lis1[i]!=lis2[i]:
+            return False
+    return True
+
 def dfs(O,i):
-    global final_O,P,F
+    global final_O,P,F,flag
     if i == len(P):
         if len(O[-1][1]) == 0:
+            #print(O[0][1])
             final_O = O
+            flag=1
             return
         else:
             return
     c1,c2 = read(P,i)
     #2 clauses
     if c1 == "??":
-        clauses = get(c2,O)
+        clauses = obtain(c2,O)
         #list
-        sorted(clauses,key = abs)
+        clauses = sorted(clauses,key = abs)
         for clause in clauses:
-            proofs = getlis (O)
+            proofs = obtainlis (O)
             for j in range(len(proofs)):
                 if -clause in proofs[j]:
                     newlis = union(clauses, clause, proofs[j], (-clause))
                     dfs(O + [(str(j+1) + 'p',newlis)], i+1)
+                    if flag == 1:
+                        return
             for j in range(len(F)):
                 if -clause in F[j]:
                     newlis = union(clauses, clause, F[j], (-clause))
                     dfs(O + [(str(j+3) + 'f',newlis)], i+1)
+                    if flag == 1:
+                        return
 
     elif c2 == "??":
-        clauses = get(c1,O)
+        clauses = obtain(c1,O)
         #list
-        sorted(clauses,key = abs)
+        clauses = sorted(clauses,key = abs)
         for clause in clauses:
-            proofs = getlis (O)
+            proofs = obtainlis (O)
             for j in range(len(proofs)):
                 if -clause in proofs[j]:
                     newlis = union(clauses, clause, proofs[j], (-clause))
                     dfs(O + [(str(j+1) + 'p',newlis)], i+1)
+                    if flag == 1:
+                        return
             for j in range(len(F)):
                 if -clause in F[j]:
                     newlis = union(clauses, clause, F[j], (-clause))
                     dfs(O + [(str(j+3) + 'f',newlis)], i+1)
+                    if flag == 1:
+                        return
 
     else:
-        clauses1 = get(c1,O)
-        clauses2 = get(c2,O)
-        sorted(clauses1,key = abs)
+        clauses1 = obtain(c1,O)
+        clauses2 = obtain(c2,O)
+        clauses1 = sorted(clauses1,key = abs)
         for clause in clauses1:
             if -clause in clauses2:
                 newlis = union(clauses, clause, clauses2, (-clause))
                 dfs(O + [('',newlis)], i+1)
+                if flag == 1:
+                    return
     
     
 def output(type, final_lis,output_file):
@@ -135,7 +154,10 @@ def output(type, final_lis,output_file):
         output_file.write(final_output)
     else:
         final_output = ''
+        
         for i in range(len(final_lis)):
+            final_lis[i] = (final_lis[i][0],sorted(final_lis[i][1],key = abs))
+            #print(final_lis[i][1])
             if final_lis[i][0] == '':
                 continue
             c1,c2 = read(P,i)
@@ -156,10 +178,12 @@ def solve(formula_path, proof_path, output_path):
 
     formula = formula.split('\n')
     for i in range(2,len(formula)):
-        F.append(get_prop(formula[i]))
+        F.append(obtain_prop(formula[i]))
 
     proof = open(proof_path,"r").read()
     proof = proof.split('\n')
+    if proof[-1] == '':
+        proof.pop(-1)
     output_file = open(output_path,"w")
     #F is formula file
 
@@ -170,3 +194,5 @@ def solve(formula_path, proof_path, output_path):
 
     dfs([],0)
     output(final_O!=-1,final_O,output_file)
+
+#solve('formula1.txt','proof_with_holes1.txt','output.txt')
